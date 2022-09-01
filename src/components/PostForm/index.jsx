@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import FormHeader from '../FormHeader'
 import { useForm } from 'react-hook-form'
 import FormErrorMessage from '../FormError'
+import createPosts from '../../services/createPosts'
 
 export default function PostForm() {
+  const formRef = useRef()
+
   const {
     register,
     handleSubmit,
@@ -11,9 +14,16 @@ export default function PostForm() {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (values) => {
-    console.log(values)
-    reset()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const onSubmit = () => {
+    setIsSubmitting(true)
+    const formData = new FormData(formRef.current)
+    createPosts(formData).then((res) => {
+      alert(res.message)
+      reset()
+      setIsSubmitting(false)
+    })
   }
 
   return (
@@ -23,7 +33,11 @@ export default function PostForm() {
           title="Crea una publicación"
           subtitle="Crea una publicación y llega a miles de usuarios."
         />
-        <form className="space-y-2 p-2" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          ref={formRef}
+          className="space-y-4 p-2 md:p-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div>
             <label className="block mb-1 text-sm font-medium">Titulo</label>
             <input
@@ -89,12 +103,15 @@ export default function PostForm() {
               <FormErrorMessage>Debes cargar una imagen</FormErrorMessage>
             )}
           </div>
-          <button
-            className="p-2 bg-blue-500 text-white font-medium rounded-md w-full hover:bg-blue-600"
-            type="submit"
-          >
-            Publicar
-          </button>
+          <div className="flex justify-center">
+            <button
+              className="p-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 disabled:bg-gray-400"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              Publicar
+            </button>
+          </div>
         </form>
       </div>
     </div>
