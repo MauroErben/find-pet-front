@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react'
 import FormHeader from '../FormHeader'
 import { useForm } from 'react-hook-form'
 import FormErrorMessage from '../FormError'
-import createPosts from '../../services/createPosts'
+import createPosts from '../../../services/createPosts'
+import { cities } from '../../../utils/cities'
 
 export default function PostForm() {
   const formRef = useRef()
@@ -28,7 +29,7 @@ export default function PostForm() {
 
   return (
     <div>
-      <div className="w-full border-2 rounded-bl rounded-br md:w-1/4 md:mx-auto">
+      <div className="w-full border-2 rounded-bl rounded-br md:w-1/4 md:mx-auto md:my-4">
         <FormHeader
           title="Crea una publicación"
           subtitle="Crea una publicación y llega a miles de usuarios."
@@ -80,16 +81,17 @@ export default function PostForm() {
             )}
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Localidad</label>
+            <label className="block mb-1 text-sm font-medium">Ciudad</label>
             <select
               className="appearance-none rounded w-full"
               {...register('location', { required: true })}
             >
-              <option>Maipú</option>
-              <option>Luján de Cuyo</option>
+              {cities.map((city) => (
+                <option key={city.id}>{city.name}</option>
+              ))}
             </select>
             {errors.location && (
-              <FormErrorMessage>Selecciona una localidad</FormErrorMessage>
+              <FormErrorMessage>Selecciona una ciudad</FormErrorMessage>
             )}
           </div>
           <div>
